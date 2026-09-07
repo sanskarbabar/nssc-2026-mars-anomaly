@@ -54,10 +54,12 @@ train/val split (154 / 18 scenes).
 ## What the iterations taught us
 
 Loss engineering (SSIM, gradient) barely moved reconstruction quality but substantially reshuffled
-the flagged crop set. However the **source‑level conclusion is invariant** to the loss: v1, v2 and
-v3 all flag `SRC_044`, `SRC_064`, `SRC_166`, `SRC_128`, `SRC_039`, `SRC_154`, `SRC_101`, `SRC_119`
-at 70–100 %. The robust, defensible answer is stated at the observation level; the crop‑level count
-(822 → 1 402 depending on model) is reported as a graded‑confidence range with a strict 1.5 % core.
+the flagged crop set (crop‑level Jaccard v1↔v3 = 0.52). However the **source‑level conclusion is
+invariant** to the loss: the per‑source mean novelty has **Spearman ρ = 0.965** between v1 and v3
+(top‑12 overlap 9/12). v1, v2 and v3 all rank `SRC_128/166/039/064/044` (polar) and
+`SRC_049/154/104/101/135/129/069` (equatorial, genuine coords) at the top. The robust, defensible
+answer is stated at the observation level (Phase 6); the crop‑level count (822 → 1 402 depending on
+model) is a graded‑confidence range with a strict 1.5 % core.
 
 > Per the problem statement, iterations need not monotonically improve a metric — each change is
 > motivated by an observed problem and its outcome is measured and reported. The v3 collapse and its

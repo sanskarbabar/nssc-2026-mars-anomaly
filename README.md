@@ -55,10 +55,14 @@ use Google Colab. `EPOCHS` at the top of the notebook auto-scales down on CPU fo
 
 ## Result (summary)
 
-The injected anomalies are **whole contaminated source observations**, not scattered crops:
-`SRC_044, SRC_064, SRC_166` are 100 % flagged; `SRC_039, SRC_128, SRC_049, SRC_154, SRC_101,
-SRC_119` are 70–90 %. Nearly all carry the metadata signature **latitude ± 90°, longitude 0°**
-(every genuine scene is longitude 180°). Primary threshold `median + 3.5·MAD` on the v3 novelty
+The injected anomalies concentrate in **whole source observations**, not scattered crops.
+Per‑source mean v3 novelty gives a clean top tier of ≈ 12 of 172 scenes, and this ranking is
+model‑robust (Spearman ρ = 0.965 between v1 and v3) even though the crop‑level flagged set is not
+(Jaccard 0.52). The tier splits into **5 polar observations** (`SRC_128, 166, 039, 064, 044`,
+95 % flagged, washed‑out/atypical) and **≈ 7 equatorial observations at genuine coordinates**
+(`SRC_049, 154, 104, 101, 135, 129, 069`, 65 % flagged, under‑represented landforms). The
+"latitude ± 90°, longitude 0°" metadata rule is **not** a reliable label — 29 scenes sit there and
+only ~5 are anomalous (see `report/REPORT.md` §6). Primary threshold `median + 3.5·MAD` on the v3
 scores → `τ = 0.486` → **1 402 crops (13.5 %)**; high‑confidence core (98.5th pct) → **157 crops
 (1.5 %)**. Full write‑up in [`report/REPORT.md`](report/REPORT.md); iteration journal in
 [`CHANGELOG.md`](CHANGELOG.md).

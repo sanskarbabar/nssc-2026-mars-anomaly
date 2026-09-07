@@ -15,14 +15,19 @@ vector → Isolation Forest → statistically justified threshold → reconstruc
 — was applied to 10,422 grayscale 227×227 HiRISE crops containing an undisclosed number of injected
 "Genesis Outlier" frames.
 
-> **Headline result.** The injected anomalies are **not scattered individual crops** — they are a
-> small set of **whole contaminated source observations** (≈ 8–15 of the 172 HiRISE scenes), almost
-> all carrying the metadata signature **latitude ± 90°, longitude 0°**, which is distinct from every
-> genuine scene (longitude 180°). Sources `SRC_044`, `SRC_064`, `SRC_166` are **100 %** flagged;
-> `SRC_039`, `SRC_128`, `SRC_049`, `SRC_154`, `SRC_101`, `SRC_119` are 70–90 % flagged. Because every
-> crop of a contaminated observation is anomalous, the final crop‑level flag rate is **13.5 %
-> (1 402 / 10 422 crops)** at the primary threshold, with a high‑confidence core of **157 crops
-> (1.5 %)**.
+> **Headline result.** The injected anomalies are **not scattered individual crops** — they
+> concentrate in **whole source observations**. Aggregating the v3 novelty score *per source* gives
+> a clean top tier of **≈ 12 of the 172 HiRISE scenes** (mean novelty 0.49–0.68 vs a bulk median of
+> 0.40), and this ranking is **highly model‑robust** (Spearman ρ = 0.965 between the v1 and v3
+> per‑source means, top‑12 overlap 9/12) even though the crop‑level flagged set is loss‑sensitive
+> (Jaccard 0.52). The tier splits in two: **5 polar observations** — `SRC_128`, `SRC_166`,
+> `SRC_039`, `SRC_064`, `SRC_044`, 95 % of their crops flagged, washed‑out / atypical texture — and
+> **≈ 7 equatorial observations** at genuine coordinates — `SRC_049`, `SRC_154`, `SRC_104`,
+> `SRC_101`, `SRC_135`, `SRC_129`, `SRC_069`, 65 % flagged, under‑represented Martian landforms
+> (dune fields, slope streaks, layered deposits). Crop‑level flag rate at the primary threshold is
+> **13.5 % (1 402 / 10 422)**; high‑confidence core **157 crops (1.5 %)**. See §6 for the honest
+> error analysis, including why the "latitude ± 90°, longitude 0°" metadata rule is *not* a reliable
+> contamination label (29 scenes sit at those coordinates; only ~5 are anomalous).
 
 ---
 
@@ -332,6 +337,46 @@ stated at the observation level, and the crop‑level count is reported as a gra
 
 ---
 
+## 6. Robustness & honest error analysis
+
+The Phase 2–3 pipeline flags crops; the defensible conclusion is at the **observation** level, and
+this section quantifies why, and where the crop‑level flag is unreliable.
+
+**6.1 Source‑level aggregation is the robust unit.**  Per‑source mean v3 novelty separates a top
+tier of ≈ 12 scenes (0.49–0.68) from the bulk (median 0.40, i.e. a ~0.10 gap at the tier edge).
+Between the pure‑MSE **v1** model and the final **v3** model the per‑source mean novelty has
+**Spearman ρ = 0.965** and a top‑12 overlap of **9/12**, whereas the *crop*‑level flagged sets have
+Jaccard only 0.52. Loss engineering reshuffles which individual crops cross the threshold; it does
+not change which observations are anomalous.
+
+**6.2 Two populations.**
+
+| tier | sources | crops | flagged | ⟨novelty⟩ | character |
+|---|---|---|---|---|---|
+| polar, contaminated | SRC_128, 166, 039, 064, 044 | 62 | **95 %** | 0.62 | washed‑out / saturated, atypical polar texture, straight no‑data sectors |
+| equatorial, lon 180 | SRC_049, 154, 104, 101, 135, 129, 069 | 389 | **65 %** | 0.53 | genuine coordinates; dune fields, slope streaks, layered/inverted‑channel terrain the equatorial‑dominated AE reconstructs poorly |
+
+The polar tier is the clearest "Genesis Outlier" set. The equatorial tier is **ambiguous**: it is
+either additional contamination or genuine but under‑represented landforms — the reconstruction
+error alone cannot decide, and we report it as lower‑confidence.
+
+**6.3 The metadata rule is not a classifier.**  29 of 172 scenes are at latitude ± 90°, longitude 0°
+(HiRISE does image the poles). Treating "> 50 % of crops flagged" as the prediction and "longitude
+0" as the label gives **precision 0.46, recall 0.21** — most polar scenes (`SRC_021` 2 %, `SRC_075`
+9 %, `SRC_040` 10 %, `SRC_045`/`SRC_117` 0 %) are entirely normal. Mean v3 novelty for lon‑0 scenes
+is 0.465 vs 0.403 for lon‑180: a real but weak shift, not a separation. The earlier draft's headline
+("almost all carrying latitude ± 90°, longitude 0°") **overstated** this and is corrected in §0.
+
+**6.4 High‑confidence core.**  Of the 157 crops above the strict 98.5th‑percentile cut (τ = 0.654),
+~80 % show a corrupted‑frame morphology — mean brightness > 0.82 (blown‑out), a large straight
+no‑data wedge, or texture collapse (std < 0.04) — consistent with the Phase 3.2 spliced /
+reprojected / composited‑boundary hypothesis. `figures/phase6_populations.png` shows four crops each
+from both anomalous tiers and from a genuine polar and a genuine equatorial scene for comparison.
+
+![Figure — Phase 6: anomaly populations. Rows: two contaminated polar observations, two equatorial (genuine-coordinate) observations, one genuine polar and one genuine equatorial scene for reference.](figures/phase6_populations.png)
+
+---
+
 ## Figure index
 
 | file | shown in |
@@ -344,3 +389,4 @@ stated at the observation level, and the crop‑level count is reported as a gra
 | `figures/v1_curves.png`, `figures/v1_recon.png` | §4 (v1) |
 | `figures/phase3_heatmaps.png` | §3 (v1) |
 | `figures/phase5_heatmaps.png` | §3 (v3, final) |
+| `figures/phase6_populations.png` | §6 |
