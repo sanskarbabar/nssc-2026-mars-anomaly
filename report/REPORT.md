@@ -2,9 +2,9 @@
 
 **NSSC 2026 — National Students' Space Challenge, IIT Kharagpur · Data Analytics**
 
-> Companion to `mars_anomaly_pipeline.ipynb`. Figures are produced by the notebook and saved to
-> `artifacts/`; copy them into `report/figures/` before exporting this document to PDF.
-> **Final answers are shown in bold boxes.**
+> Companion to `mars_anomaly_pipeline.ipynb`. Figures (in `report/figures/`) are the outputs of the
+> notebook's final GPU run. `REPORT.html` is a self-contained render; open it in a browser and
+> print to PDF for `REPORT.pdf`. **Final answers are shown in bold boxes.**
 
 ---
 
@@ -63,6 +63,8 @@ SSIM; `v3` adds the gradient term. See Phase 4 for the outcome and the numerical
 Latent matrix `(10422, 256)`, no NaNs, standardised (mean |z| ≈ 19.5 before scaling). t‑SNE
 (perplexity 40, PCA init) and UMAP on a 5 000‑crop subsample — **`figures/latent_projection.png`**.
 
+![Figure — t-SNE / UMAP of the 256-D latents, coloured by season / sun_angle / resolution](figures/latent_projection.png)
+
 **Diagnostic reading (qualitative only):** the projection shows a large graded manifold with a few
 small detached groups — **not one structureless blob**, so the encoder is capturing useful
 variation. Colour gradients aligned with `sun_angle` and `resolution` are expected (they drive
@@ -82,6 +84,8 @@ max_samples='auto', contamination='auto')`. sklearn's `score_samples` is *higher
 
 `contamination='auto'` is used **only** to populate sklearn's internal `offset_` (needed by
 `.predict`); it is **not** used to choose the anomaly count — that comes entirely from §2.2.
+
+![Figure — v1 novelty-score Q-Q plot, density with candidate thresholds, and sorted-score curve](figures/threshold_analysis.png)
 
 Score distribution (v3, final model): mean 0.398, sd 0.078, min 0.332, max 0.779, right‑skewed.
 
@@ -110,6 +114,8 @@ is itself the finding — a very heavy anomalous tail. Sensitivity: `k = 3 → �
 `k = 5 → ≈ 4 %`. The flagged set is therefore reported as **graded‑confidence**, with the strict
 98.5th‑percentile cut (**157 crops, 1.5 %**) as the high‑confidence core carried into Phase 3.
 
+![Figure — v3 novelty-score density with candidate thresholds (left) and sorted scores (right)](figures/phase5_threshold.png)
+
 > **Final threshold (v3):** `τ = 0.486` (`median + 3.5·MAD`) → **1 402 crops (13.45 %)** flagged;
 > high‑confidence core `τ = 0.654` → **157 crops (1.51 %)**.
 > (v1 baseline, for comparison: `τ = 0.534` → 822 crops, 7.9 %.)
@@ -136,6 +142,8 @@ catalog was **not** done.
 | **(60, 90]** | **420** | **21.9 %** |
 
 χ²(season vs flagged) `p = 5 × 10⁻⁶` (season‑dependent); χ²(resolution vs flagged) `p = 0.03`.
+
+![Figure — per-source flagged rate by location (left) and distribution of per-source flagged rate (right)](figures/location_analysis.png)
 
 **Per‑source enrichment — the candidate "Genesis" observations (`figures/location_analysis.png`):**
 
@@ -194,6 +202,8 @@ overlay — **`figures/phase5_heatmaps.png`**.
 
 | crop | source | novelty (v3) | top‑1 % share | Gini | error centroid | norm. spread |
 |---|---|---|---|---|---|---|
+![Figure — v3 top-5 flagged crops: original, reconstruction, squared-error overlay](figures/phase5_heatmaps.png)
+
 | `sample_03718.jpg` | `SRC_022` | 0.779 | 0.32 | 0.81 | (0.54, 0.75) | 0.38 |
 | `sample_07798.jpg` | `SRC_128` | 0.777 | 0.49 | 0.90 | (0.33, 0.73) | 0.34 |
 | `sample_07899.jpg` | `SRC_128` | 0.777 | 0.12 | 0.62 | (0.51, 0.49) | 0.43 |
@@ -241,6 +251,10 @@ Format: **symptom → diagnosis → fix → outcome.** All checkpoints saved und
 | v1 | MSE | 0.636 | 822 | 1.00 |
 | v2 | MSE + 0.15·(1−SSIM) | 0.644 | 1 089 | 0.56 |
 | v3 | MSE + 0.15·(1−SSIM) + 0.10·GradL1 | 0.645 | 1 567 | 0.52 |
+
+![Figure — v1 training curves (left) and original-vs-reconstruction grid (right)](figures/v1_curves.png)
+
+![Figure — v1 reconstructions vs originals](figures/v1_recon.png)
 
 ### v1 — pure‑MSE baseline
 
