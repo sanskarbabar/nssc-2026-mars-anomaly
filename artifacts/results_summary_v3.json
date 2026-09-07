@@ -1,0 +1,33 @@
+{
+  "model": "v3 (MSE + 0.15*SSIM + 0.10*gradL1)",
+  "val_ssim_v3": 0.645,
+  "primary_threshold_method": "median+3.5*MAD",
+  "tau_v3": 0.48613778500216287,
+  "candidate_thresholds_v3": {
+    "KDE antimode": 0.4244286937145671,
+    "median+3.5*MAD": 0.48613778500216287,
+    "98.5th pct (strict)": 0.6535401265768761
+  },
+  "n_flagged_v3": 1402,
+  "pct_flagged_v3": 13.452,
+  "jaccard_v1_v3": 0.556,
+  "top5_flagged_v3": [
+    "sample_03718.jpg",
+    "sample_07798.jpg",
+    "sample_07899.jpg",
+    "sample_08288.jpg",
+    "sample_00216.jpg"
+  ],
+  "genesis_candidate_sources": [
+    "SRC_044",
+    "SRC_064",
+    "SRC_166",
+    "SRC_039",
+    "SRC_049",
+    "SRC_128",
+    "SRC_154",
+    "SRC_101"
+  ],
+  "season_chi2_p_v3": 0.00020756647023785062,
+  "resolution_chi2_p_v3": 0.014864112604774273
+}

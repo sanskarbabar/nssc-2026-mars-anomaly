@@ -1,0 +1,40 @@
+{
+  "config": {
+    "IMG_SIZE": 224,
+    "LATENT_DIM": 256,
+    "BATCH_SIZE": 128,
+    "EPOCHS": 18,
+    "LR": 0.002,
+    "SEED": 42
+  },
+  "n_crops": 10422,
+  "n_sources": 172,
+  "data_integrity": {
+    "missing_file": 0,
+    "bad_size": 0,
+    "bad_mode": 0,
+    "unreadable": 0
+  },
+  "primary_threshold_method": "median+3.5*MAD",
+  "tau": 0.5335871345529052,
+  "n_flagged": 822,
+  "pct_flagged": 7.887,
+  "candidate_thresholds": {
+    "mu+3sigma": 0.6156701713877621,
+    "median+3.5*MAD": 0.5335871345529052,
+    "Tukey 1.5*IQR": 0.5862498381983493,
+    "Tukey 3.0*IQR": 0.722164653194191,
+    "Kneedle": 0.4220398249668567,
+    "KDE valley": 0.4459161724283755
+  },
+  "season_chi2_p": 5.4568046757881296e-06,
+  "resolution_chi2_p": 0.03174832291800179,
+  "top5_flagged": [
+    "sample_03718.jpg",
+    "sample_03412.jpg",
+    "sample_04783.jpg",
+    "sample_10097.jpg",
+    "sample_00226.jpg"
+  ],
+  "fusion_jaccard_vs_image_only": 0.5177890724269377
+}
